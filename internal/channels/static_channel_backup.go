@@ -11,8 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func getStaticChannelBackup(db *sqlx.DB, requestBody lnrpc.ChanBackupExportRequest) (r lnrpc.ChannelBackups, err error) {
-
+func getStaticChannelBackup(db *sqlx.DB) (r lnrpc.ChannelBackups, err error) {
 	connectionDetails, err := settings.GetConnectionDetails(db)
 	conn, err := lnd_connect.Connect(
 		connectionDetails[0].GRPCAddress,
@@ -28,7 +27,9 @@ func getStaticChannelBackup(db *sqlx.DB, requestBody lnrpc.ChanBackupExportReque
 	client := lnrpc.NewLightningClient(conn)
 	ctx := context.Background()
 
-	resp, err := client.ExportAllChannelBackups(ctx, &requestBody)
+	var chanBackupExportReq lnrpc.ChanBackupExportRequest
+
+	resp, err := client.ExportAllChannelBackups(ctx, &chanBackupExportReq)
 	if err != nil {
 		log.Error().Msgf("Error exporting all channel backups: %v", err)
 		return r, err

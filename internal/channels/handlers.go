@@ -5,7 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
-	"github.com/lightningnetwork/lnd/lnrpc"
 	"github.com/lncapital/torq/pkg/server_errors"
 	"github.com/rs/zerolog/log"
 )
@@ -91,9 +90,7 @@ func batchOpenHandler(c *gin.Context, db *sqlx.DB) {
 }
 
 func getStaticChannelBackupHandler(c *gin.Context, db *sqlx.DB) {
-	var chanBackupExportReq lnrpc.ChanBackupExportRequest
-
-	response, err := getStaticChannelBackup(db, chanBackupExportReq)
+	response, err := getStaticChannelBackup(db)
 
 	if err != nil {
 		server_errors.WrapLogAndSendServerError(c, err, "Export all channel backups")

@@ -1,11 +1,13 @@
 package channels
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+	"github.com/lightningnetwork/lnd/lnrpc"
 	"github.com/lncapital/torq/pkg/server_errors"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 type failedUpdate struct {
@@ -88,7 +90,21 @@ func batchOpenHandler(c *gin.Context, db *sqlx.DB) {
 	c.JSON(http.StatusOK, response)
 }
 
+func getStaticChannelBackupHandler(c *gin.Context, db *sqlx.DB) {
+	var chanBackupExportReq lnrpc.ChanBackupExportRequest
+
+	response, err := getStaticChannelBackup(db, chanBackupExportReq)
+
+	if err != nil {
+		server_errors.WrapLogAndSendServerError(c, err, "Export all channel backups")
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
 func RegisterChannelRoutes(r *gin.RouterGroup, db *sqlx.DB) {
 	r.POST("update", func(c *gin.Context) { updateChannelsHandler(c, db) })
 	r.POST("openbatch", func(c *gin.Context) { batchOpenHandler(c, db) })
+	r.GET("static-channel-backup", func(c *gin.Context) { getStaticChannelBackupHandler(c, db) })
 }

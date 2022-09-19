@@ -31,7 +31,7 @@ func getStaticChannelBackup(db *sqlx.DB) (r lnrpc.ChannelBackups, err error) {
 
 	resp, err := client.ExportAllChannelBackups(ctx, &chanBackupExportReq)
 	if err != nil {
-		log.Error().Msgf("Error exporting all channel backups: %v", err)
+		log.Error().Msgf("Error getting static channel backup: %v", err)
 		return r, err
 	}
 

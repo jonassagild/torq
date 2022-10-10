@@ -13,6 +13,9 @@ import (
 
 func getStaticChannelBackup(db *sqlx.DB) (r lnrpc.ChannelBackups, err error) {
 	connectionDetails, err := settings.GetConnectionDetails(db)
+	if err != nil {
+		return errors.New("Getting node connection details from the db")
+	}
 	conn, err := lnd_connect.Connect(
 		connectionDetails[0].GRPCAddress,
 		connectionDetails[0].TLSFileBytes,

@@ -40,5 +40,5 @@ func getStaticChannelBackup(db *sqlx.DB) (r lnrpc.ChannelBackups, err error) {
 
 	staticChannelBackupResp := *resp.SingleChanBackups
 
-	return staticChannelBackupResp, err
+	return staticChannelBackupResp, nil
 }
